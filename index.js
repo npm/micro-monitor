@@ -6,7 +6,7 @@ module.exports = function startMonitor (port, callback) {
   let commitHash = ''
 
   monitor.get('/_monitor/ping', function (request, response, next) {
-    response.send(200, 'OK')
+    response.send(200, 'pong')
     next()
   })
 

@@ -28,7 +28,7 @@ describe('micro-monitor', () => {
     }, (err, res, response) => {
       if (err) return done(err)
       res.statusCode.should.equal(200)
-      response.should.equal('OK')
+      response.should.equal('pong')
       return done()
     })
   })
