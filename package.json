@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "standard",
     "test": "nyc mocha test.js",
-    "coverage": "nyc --reporter=text-lcov mocha | coveralls",
+    "coverage": "nyc --reporter=text-lcov mocha | coveralls"
   },
   "repository": {
     "type": "git",
