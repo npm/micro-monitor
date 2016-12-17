@@ -1,0 +1,34 @@
+{
+  "name": "micro-monitor",
+  "version": "1.0.0",
+  "description": "add a monitoring endpoint to your node background services",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "standard",
+    "test": "nyc mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/npm/micro-monitor.git"
+  },
+  "keywords": [
+    "micro",
+    "monitor"
+  ],
+  "author": "Ben Coe <ben@npmjs.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/npm/micro-monitor/issues"
+  },
+  "homepage": "https://github.com/npm/micro-monitor#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "nyc": "^10.0.0",
+    "request": "^2.79.0",
+    "standard": "^8.6.0"
+  },
+  "dependencies": {
+    "restify": "^4.3.0"
+  }
+}
