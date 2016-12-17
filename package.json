@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "pretest": "standard",
-    "test": "nyc mocha test.js"
+    "test": "nyc mocha test.js",
+    "coverage": "nyc --reporter=text-lcov mocha | coveralls",
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "homepage": "https://github.com/npm/micro-monitor#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
     "request": "^2.79.0",

@@ -20,4 +20,16 @@ describe('micro-monitor', () => {
       return done()
     })
   })
+
+  it('responds with ping', (done) => {
+    request.get({
+      url: 'http://127.0.0.1:9999/_monitor/ping',
+      json: true
+    }, (err, res, response) => {
+      if (err) return done(err)
+      res.statusCode.should.equal(200)
+      response.should.equal('OK')
+      return done()
+    })
+  })
 })
