@@ -13,7 +13,7 @@ module.exports = function startMonitor (port, callback) {
   })
 
   monitor.get('/_monitor/status', function (request, response, next) {
-    let status = {
+    const status = {
       pid: process.pid,
       uptime: process.uptime(),
       rss: process.memoryUsage(),
