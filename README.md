@@ -41,7 +41,7 @@ let monitor = Monitor(9999, () => {
 ```
 
 * `http://0.0.0.1:9999/_monitor/ping` is also available and will respond with
-  status `200` and the text `OK`.
+  status `200` and the text `pong`.
 
 ## Customizing Status Information
 
