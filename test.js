@@ -2,11 +2,12 @@
 
 require('chai').should()
 
-const monitor = require('./')
+const Monitor = require('./')
 const request = require('request')
 
 describe('micro-monitor', () => {
-  before((done) => monitor(9999, done))
+  let monitor = null
+  before((done) => { monitor = Monitor(9999, done) })
 
   it('responds with status information', (done) => {
     request.get({
@@ -30,6 +31,28 @@ describe('micro-monitor', () => {
       res.statusCode.should.equal(200)
       response.should.equal('pong')
       return done()
+    })
+  })
+
+  describe('contribute', () => {
+    it('allows you to contribute new and exciting keys to the status object', (done) => {
+      const obj = {batman: 'rich but grumpy'}
+      monitor.contribute(() => {
+        return {
+          batman: obj.batman
+        }
+      })
+
+      request.get({
+        url: 'http://127.0.0.1:9999/_monitor/status',
+        json: true
+      }, (err, res, response) => {
+        if (err) return done(err)
+        monitor.contribute(function () {})
+        res.statusCode.should.equal(200)
+        response.batman.should.equal('rich but grumpy')
+        return done()
+      })
     })
   })
 })

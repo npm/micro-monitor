@@ -1,5 +1,8 @@
+const assert = require('assert')
 const restify = require('restify')
 const exec = require('child_process').exec
+
+let contributor = null
 
 module.exports = function startMonitor (port, callback) {
   const monitor = restify.createServer({name: 'monitor'})
@@ -11,13 +14,13 @@ module.exports = function startMonitor (port, callback) {
   })
 
   monitor.get('/_monitor/status', function (request, response, next) {
-    const status = {
+    const status = Object.assign({
       pid: process.pid,
       uptime: process.uptime(),
       rss: process.memoryUsage(),
       cmdline: process.argv,
       git: commitHash
-    }
+    }, contributor ? contributor() : undefined)
     response.json(200, status)
     next()
   })
@@ -26,4 +29,11 @@ module.exports = function startMonitor (port, callback) {
     if (!err && stdout) commitHash = stdout.trim()
     monitor.listen(port, callback)
   })
+
+  return {
+    contribute: (_contributor) => {
+      assert(typeof _contributor === 'function', 'contributor must be a function')
+      contributor = _contributor
+    }
+  }
 }
