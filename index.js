@@ -1,7 +1,8 @@
+const assert = require('assert')
 const restify = require('restify')
 const exec = require('child_process').exec
 
-const monitoredObjects = []
+let contributor = null
 
 module.exports = function startMonitor (port, callback) {
   const monitor = restify.createServer({name: 'monitor'})
@@ -13,18 +14,13 @@ module.exports = function startMonitor (port, callback) {
   })
 
   monitor.get('/_monitor/status', function (request, response, next) {
-    const status = {
+    const status = Object.assign({
       pid: process.pid,
       uptime: process.uptime(),
       rss: process.memoryUsage(),
       cmdline: process.argv,
       git: commitHash
-    }
-    monitoredObjects.forEach((mo) => {
-      let val = mo.obj[mo.key]
-      if (typeof val === 'function') val = val()
-      status[mo.key] = val
-    })
+    }, contributor ? contributor() : undefined)
     response.json(200, status)
     next()
   })
@@ -35,17 +31,9 @@ module.exports = function startMonitor (port, callback) {
   })
 
   return {
-    monitorKey: (obj, key) => {
-      monitoredObjects.push({
-        key: key,
-        obj: obj
-      })
-    },
-    stopMonitoringKey: (obj, key) => {
-      const element = monitoredObjects.find((e) => {
-        return e.key === key && e.obj === obj
-      })
-      monitoredObjects.splice(monitoredObjects.indexOf(element), 1)
+    contribute: (_contributor) => {
+      assert(typeof _contributor === 'function', 'contributor must be a function')
+      contributor = _contributor
     }
   }
 }

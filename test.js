@@ -2,7 +2,6 @@
 
 require('chai').should()
 
-const expect = require('chai').expect
 const Monitor = require('./')
 const request = require('request')
 
@@ -35,71 +34,23 @@ describe('micro-monitor', () => {
     })
   })
 
-  describe('monitorKey', () => {
-    it('allows an arbitrary key on an object to be monitored', (done) => {
+  describe('contribute', () => {
+    it('allows you to contribute new and exciting keys to the status object', (done) => {
       const obj = {batman: 'rich but grumpy'}
-      monitor.monitorKey(obj, 'batman')
+      monitor.contribute(() => {
+        return {
+          batman: obj.batman
+        }
+      })
 
       request.get({
         url: 'http://127.0.0.1:9999/_monitor/status',
         json: true
       }, (err, res, response) => {
         if (err) return done(err)
-        monitor.stopMonitoringKey(obj, 'batman')
+        monitor.contribute(function () {})
         res.statusCode.should.equal(200)
         response.batman.should.equal('rich but grumpy')
-        return done()
-      })
-    })
-
-    it('allows the return value of a function to be monitored', (done) => {
-      const obj = {batman: () => { return 'friends with superman' }}
-      monitor.monitorKey(obj, 'batman')
-
-      request.get({
-        url: 'http://127.0.0.1:9999/_monitor/status',
-        json: true
-      }, (err, res, response) => {
-        if (err) return done(err)
-        monitor.stopMonitoringKey(obj, 'batman')
-        res.statusCode.should.equal(200)
-        response.batman.should.equal('friends with superman')
-        return done()
-      })
-    })
-
-    it('should report new value if original object is updated', (done) => {
-      const obj = {batman: 'rich but grumpy'}
-      monitor.monitorKey(obj, 'batman')
-      obj.batman = 'Caped Crusader'
-
-      request.get({
-        url: 'http://127.0.0.1:9999/_monitor/status',
-        json: true
-      }, (err, res, response) => {
-        if (err) return done(err)
-        monitor.stopMonitoringKey(obj, 'batman')
-        res.statusCode.should.equal(200)
-        response.batman.should.equal('Caped Crusader')
-        return done()
-      })
-    })
-  })
-
-  describe('stopMonitoringKey', () => {
-    it('stops monitoring a given key on an object', (done) => {
-      const obj = {batman: 'rich but grumpy'}
-      monitor.monitorKey(obj, 'batman')
-      monitor.stopMonitoringKey(obj, 'batman')
-
-      request.get({
-        url: 'http://127.0.0.1:9999/_monitor/status',
-        json: true
-      }, (err, res, response) => {
-        if (err) return done(err)
-        monitor.stopMonitoringKey(obj, 'batman')
-        res.statusCode.should.equal(200)
-        expect(response.batman).to.equal(undefined)
         return done()
       })
     })

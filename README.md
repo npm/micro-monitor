@@ -22,7 +22,7 @@ let monitor = Monitor(9999, () => {
 * `http://0.0.0.1:9999/_monitor/status` is now available, and will
   respond with a `200` status and status object:
 
-  ```json
+```json
 {
   "pid": 42176,
   "uptime": 0.796,
@@ -38,21 +38,19 @@ let monitor = Monitor(9999, () => {
   ],
   "git": "b0c57aa"
 }
-  ```
+```
 
 * `http://0.0.0.1:9999/_monitor/ping` is also available and will respond with
   status `200` and the text `OK`.
 
 ## Customizing Status Information
 
-You can customize the status information returned, by configuring
-`micro-monitor` to monitor a key on an arbitrary object:
+You can customize the status information returned using `contribute`:
 
-* **monitor.monitorKey(obj, key)**: the status object returned by
-  `/_monitor/status` will be populated with a `key` equal to the
-  value of the given `key` on `obj`.
-* **monitor.stopMonitoringKey(obj, key)**: stop monitoring the
-  key on an object.
+* **monitor.contribute(contributor)**: contribute additional information
+  to the status object returned on `/_monitor/status`.
+  * `contributor`: a function returning the object to supplement the status
+    object with.
 
 ## License
 
