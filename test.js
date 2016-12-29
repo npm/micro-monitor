@@ -52,6 +52,22 @@ describe('micro-monitor', () => {
       })
     })
 
+    it('allows the return value of a function to be monitored', (done) => {
+      const obj = {batman: () => { return 'friends with superman' }}
+      monitor.monitorKey(obj, 'batman')
+
+      request.get({
+        url: 'http://127.0.0.1:9999/_monitor/status',
+        json: true
+      }, (err, res, response) => {
+        if (err) return done(err)
+        monitor.stopMonitoringKey(obj, 'batman')
+        res.statusCode.should.equal(200)
+        response.batman.should.equal('friends with superman')
+        return done()
+      })
+    })
+
     it('should report new value if original object is updated', (done) => {
       const obj = {batman: 'rich but grumpy'}
       monitor.monitorKey(obj, 'batman')

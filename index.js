@@ -21,7 +21,9 @@ module.exports = function startMonitor (port, callback) {
       git: commitHash
     }
     monitoredObjects.forEach((mo) => {
-      status[mo.key] = mo.obj[mo.key]
+      let val = mo.obj[mo.key]
+      if (typeof val === 'function') val = val()
+      status[mo.key] = val
     })
     response.json(200, status)
     next()
