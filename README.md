@@ -50,7 +50,7 @@ You can customize the status information returned, by configuring
 
 * **monitor.monitorKey(obj, key)**: the status object returned by
   `/_monitor/status` will be populated with a `key` equal to the
-  value of the given `key on `obj`.
+  value of the given `key` on `obj`.
 * **monitor.stopMonitoringKey(obj, key)**: stop monitoring the
   key on an object.
 
