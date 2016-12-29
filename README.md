@@ -12,9 +12,9 @@ HTTP interface.
 Simply initialize the monitor when your application starts up:
 
 ```js
-const monitor = require('micro-monitor')
+const Monitor = require('micro-monitor')
 
-monitor(9999, () => {
+let monitor = Monitor(9999, () => {
 // do something now that monitoring is running
 })
 ```
@@ -42,6 +42,17 @@ monitor(9999, () => {
 
 * `http://0.0.0.1:9999/_monitor/ping` is also available and will respond with
   status `200` and the text `OK`.
+
+## Customizing Status Information
+
+You can customize the status information returned, by configuring
+`micro-monitor` to monitor a key on an arbitrary object:
+
+* **monitor.monitorKey(obj, key)**: the status object returned by
+  `/_monitor/status` will be populated with a `key` equal to the
+  value of the given `key on `obj`.
+* **monitor.stopMonitoringKey(obj, key)**: stop monitoring the
+  key on an object.
 
 ## License
 
