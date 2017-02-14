@@ -1,3 +1,5 @@
+'use strict'
+
 const assert = require('assert')
 const restify = require('restify')
 const exec = require('child_process').exec
