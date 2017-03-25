@@ -2,6 +2,7 @@
 
 const assert = require('assert')
 const restify = require('restify')
+const Promise = require('bluebird')
 const exec = require('child_process').exec
 
 let contributor = null
@@ -16,15 +17,26 @@ module.exports = function startMonitor (port, callback) {
   })
 
   monitor.get('/_monitor/status', function (request, response, next) {
-    const status = Object.assign({
-      pid: process.pid,
-      uptime: process.uptime(),
-      rss: process.memoryUsage(),
-      cmdline: process.argv,
-      git: commitHash
-    }, contributor ? contributor() : undefined)
-    response.json(200, status)
-    next()
+    const getExtra = (
+      contributor
+      ? Promise.try(() => contributor())
+      : Promise.resolve({})
+    )
+
+    const getStatus = getExtra.then(obj => {
+      return Object.assign({
+        pid: process.pid,
+        uptime: process.uptime(),
+        rss: process.memoryUsage(),
+        cmdline: process.argv,
+        git: commitHash
+      }, obj)
+    })
+
+    return getStatus.then(status => {
+      response.json(200, status)
+      next()
+    })
   })
 
   exec('git rev-parse --short HEAD', function (err, stdout, stderr) {

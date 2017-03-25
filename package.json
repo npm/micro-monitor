@@ -33,6 +33,7 @@
     "standard-version": "^4.0.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "restify": "^4.3.0"
   }
 }
