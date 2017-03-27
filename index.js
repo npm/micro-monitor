@@ -1,22 +1,30 @@
 'use strict'
 
+const http = require('http')
 const assert = require('assert')
-const restify = require('restify')
 const Promise = require('bluebird')
 const exec = require('child_process').exec
+const logger = require('bole')('monitor')
 
 let contributor = null
 
 module.exports = function startMonitor (port, callback) {
-  const monitor = restify.createServer({name: 'monitor'})
+  const monitor = http.createServer()
   let commitHash = ''
 
-  monitor.get('/_monitor/ping', function (request, response, next) {
-    response.send(200, 'pong')
-    next()
+  monitor.on('request', (req, res) => {
+    if (req.url !== '/_monitor/ping') {
+      return
+    }
+    req.handled = true
+    res.end('pong')
   })
 
-  monitor.get('/_monitor/status', function (request, response, next) {
+  monitor.on('request', (req, res) => {
+    if (req.url !== '/_monitor/status') {
+      return
+    }
+    req.handled = true
     const getExtra = (
       contributor
       ? Promise.try(() => contributor())
@@ -34,9 +42,18 @@ module.exports = function startMonitor (port, callback) {
     })
 
     return getStatus.then(status => {
-      response.json(200, status)
-      next()
+      res.writeHead(200, {'content-type': 'application/json'})
+      res.end(JSON.stringify(status))
     })
+  })
+
+  monitor.on('request', (req, res) => {
+    logger.info(req)
+    if (req.handled) {
+      return
+    }
+    res.writeHead(404)
+    res.end('')
   })
 
   exec('git rev-parse --short HEAD', function (err, stdout, stderr) {
@@ -44,10 +61,10 @@ module.exports = function startMonitor (port, callback) {
     monitor.listen(port, callback)
   })
 
-  return {
+  return Object.assign(monitor, {
     contribute: (_contributor) => {
       assert(typeof _contributor === 'function', 'contributor must be a function')
       contributor = _contributor
     }
-  }
+  })
 }

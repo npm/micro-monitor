@@ -4,7 +4,7 @@
   "description": "add a monitoring endpoint to your node background services",
   "main": "index.js",
   "scripts": {
-    "pretest": "standard",
+    "posttest": "standard",
     "test": "nyc mocha test.js",
     "coverage": "nyc --reporter=text-lcov mocha | coveralls",
     "release": "standard-version"
@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "restify": "^4.3.0"
+    "bole": "*"
   }
 }

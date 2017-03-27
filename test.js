@@ -55,4 +55,17 @@ describe('micro-monitor', () => {
       })
     })
   })
+
+  describe('missing endpoint', () => {
+    it('still 404s', (done) => {
+      request.get({
+        url: 'http://127.0.0.1:9999/_monitor/status-but-no-i-kid',
+        json: true
+      }, (err, res, response) => {
+        if (err) return done(err)
+        res.statusCode.should.equal(404)
+        return done()
+      })
+    })
+  })
 })
