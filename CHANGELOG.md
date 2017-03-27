@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/npm/micro-monitor/compare/v2.1.0...v3.0.0) (2017-03-27)
+
+
+### Bug Fixes
+
+* use raw HTTP, return full server object ([856b5a1](https://github.com/npm/micro-monitor/commit/856b5a1))
+
+
+### BREAKING CHANGES
+
+* no longer uses restify
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/npm/micro-monitor/compare/v2.0.1...v2.1.0) (2017-03-25)
 
