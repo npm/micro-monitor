@@ -1,5 +1,7 @@
 # Micro Monitor
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/npm/micro-monitor.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://img.shields.io/travis/npm/micro-monitor/master.svg)](https://travis-ci.org/npm/micro-monitor)
 [![Coverage Status](https://coveralls.io/repos/npm/micro-monitor/badge.svg?branch=master)](https://coveralls.io/r/npm/micro-monitor?branch=master)
 
