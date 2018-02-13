@@ -22,7 +22,7 @@ describe('micro-monitor', () => {
     })
   })
 
-  it('responds with ping', (done) => {
+  it('responds to ping', (done) => {
     request.get({
       url: 'http://127.0.0.1:9999/_monitor/ping',
       json: true
@@ -30,6 +30,19 @@ describe('micro-monitor', () => {
       if (err) return done(err)
       res.statusCode.should.equal(200)
       response.should.equal('pong')
+      return done()
+    })
+  })
+
+  it('responds to ping with a custom response if requested', (done) => {
+    process.env.PING_RESPONSE = 'custom'
+    request.get({
+      url: 'http://127.0.0.1:9999/_monitor/ping',
+      json: true
+    }, (err, res, response) => {
+      if (err) return done(err)
+      res.statusCode.should.equal(200)
+      response.should.equal('custom')
       return done()
     })
   })

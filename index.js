@@ -17,7 +17,7 @@ module.exports = function startMonitor (port, callback) {
       return
     }
     req.handled = true
-    res.end('pong')
+    res.end(process.env.PING_RESPONSE || 'pong')
   })
 
   monitor.on('request', (req, res) => {
