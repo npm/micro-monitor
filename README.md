@@ -52,6 +52,20 @@ You can customize the status information returned using `contribute`:
   * `contributor`: a function returning the object to supplement the status
     object with.
 
+## Configuration
+
+When the monitor is first started, it will attempt to pull the commit hash for
+the current project by performing a `git rev-parse`. If you wish to supply your
+own value for the `git` field, set the `BUILD_HASH` environment variable.
+
+## Shutdown
+
+You can halt the monitor using `stop`:
+
+* **monitor.stop() ⇒ `Promise`**: halt the monitor
+  * `close`: a function returning a Promise which is resolved once the
+    monitor server has halted.
+
 ## License
 
 ISC
