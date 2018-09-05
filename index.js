@@ -11,6 +11,10 @@ let contributor = null
 module.exports = function startMonitor (port, callback) {
   const monitor = http.createServer()
   let commitHash = ''
+  let listening = () => {}
+  let ready = new Promise(resolve => {
+    listening = resolve
+  })
 
   monitor.on('request', (req, res) => {
     if (req.url !== '/_monitor/ping') {
@@ -56,15 +60,29 @@ module.exports = function startMonitor (port, callback) {
     res.end('')
   })
 
-  exec('git rev-parse --short HEAD', function (err, stdout, stderr) {
-    if (!err && stdout) commitHash = stdout.trim()
-    monitor.listen(port, callback)
+  function gitHash () {
+    return new Promise(resolve => {
+      exec('git rev-parse --short HEAD', function (err, stdout, stderr) {
+        resolve((!err && stdout) ? stdout.trim() : undefined)
+      })
+    })
+  }
+
+  Promise.resolve(process.env.BUILD_HASH)
+  .then(envHash => envHash || gitHash())
+  .then(hash => {
+    commitHash = hash
+    monitor.listen(port, () => {
+      listening()
+      callback()
+    })
   })
 
   return Object.assign(monitor, {
     contribute: (_contributor) => {
       assert(typeof _contributor === 'function', 'contributor must be a function')
       contributor = _contributor
-    }
+    },
+    stop: () => ready.then(() => new Promise(resolve => monitor.close(resolve)))
   })
 }

@@ -81,4 +81,53 @@ describe('micro-monitor', () => {
       })
     })
   })
+
+  describe('git hash', () => {
+    it('should prefer the value of BUILD_HASH', (done) => {
+      process.env.BUILD_HASH = 'feed'
+      const monitor = Monitor(9867, () => {
+        request.get({
+          url: 'http://127.0.0.1:9867/_monitor/status',
+          json: true
+        }, (err, res, response) => {
+          if (err) return done(err)
+          res.statusCode.should.equal(200)
+          response.git.should.equal('feed')
+          monitor.stop().then(done)
+        })
+      })
+    })
+
+    it('should fall back to the head of the current repo', (done) => {
+      if (process.env.BUILD_HASH) {
+        delete process.env.BUILD_HASH
+      }
+      const monitor = Monitor(9867, () => {
+        request.get({
+          url: 'http://127.0.0.1:9999/_monitor/status',
+          json: true
+        }, (err, res, response) => {
+          if (err) return done(err)
+          res.statusCode.should.equal(200)
+          response.git.should.match(/[0-9a-f]{7}/)
+          monitor.stop().then(done)
+        })
+      })
+    })
+  })
+
+  describe('halts cleanly', () => {
+    it('stop() triggers close()', (done) => {
+      let stopped = false
+      const close = monitor.close.bind(monitor)
+      monitor.close = (closed) => {
+        stopped = true
+        close(closed)
+      }
+      monitor.stop().then(() => {
+        stopped.should.equal(true)
+        done()
+      })
+    })
+  })
 })
